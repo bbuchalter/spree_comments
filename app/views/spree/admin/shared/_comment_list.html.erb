@@ -1,10 +1,13 @@
-<table class="index">
+<table class="index" data-hook="<%=commentable.class.table_name%>-comments">
   <tr>
     <th style="width:140px;"><%= "#{t('spree.date')}/#{t('spree.time')}" %></th>
     <% if @comment_types and !@comment_types.empty? %>
       <th><%= t(:type) %></th>
     <% end %>
     <th><%= t(:comment) %></th>
+    <% if commentable.comments.collect(&:commentable_type).uniq.length > 1 %>
+      <th>Comment On</th>
+    <% end %>
   </tr>
   <% commentable.comments.reverse.each_with_index do |comment, index| %>
     <tr id="<%= dom_id(comment) %>">
@@ -20,6 +23,11 @@
           <%= comment.comment.html_safe %>
         </div>
       </td>
+      <% if commentable.comments.collect(&:commentable_type).uniq.length > 1 %>
+        <td>
+          <%= link_to comment.commentable.comment_description, [:admin, comment.commentable] %>
+        </td>
+      <% end %>
     </tr>
   <% end %>
 </table>
